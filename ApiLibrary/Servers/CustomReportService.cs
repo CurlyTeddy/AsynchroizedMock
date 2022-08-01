@@ -1,28 +1,28 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
 
-namespace ApiLibrary
+namespace CustomReportLibrary
 {
-    public class CustomReportServices
+    public class CustomReportService : ICustomReportService
     {
         private readonly string Target;
 
-        public CustomReportServices(string target)
+        public CustomReportService(string target)
         {
             Target = target;
         }
 
         public async Task<ResponseContent> CustomReportPostAsync(RequestContent content)
         {
-            HttpClient httpClient = new HttpClient();
-            HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("Post"), Target)
+            HttpClient httpClient = new();
+            HttpRequestMessage request = new(new HttpMethod("Post"), Target)
             {
                 Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json")
             };
 
             HttpResponseMessage response = await httpClient.SendAsync(request);
             string respondContent = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ResponseContent>(respondContent);
+            return JsonConvert.DeserializeObject<ResponseContent>(respondContent)!;
         }
     }
 }
